@@ -1,5 +1,7 @@
 # Power Tips
 
+**English** | [한국어](tips-ko.md)
+
 Advanced techniques for getting the most out of Warp's agent capabilities.
 
 ## Agent Profiles: YOLO vs Strategic

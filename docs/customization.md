@@ -1,5 +1,7 @@
 # Customization Guide
 
+**English** | [한국어](customization-ko.md)
+
 ## Adding Your Own Skills
 
 Skills are `SKILL.md` files that Warp loads to give the agent specialized capabilities.

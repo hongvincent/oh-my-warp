@@ -1,6 +1,8 @@
 # Getting Started with oh-my-warp
 
-A beginner-friendly guide to setting up and using oh-my-warp.
+**English** | [한국어](getting-started-ko.md)
+
+A beginner-friendly guide
 
 ## What is oh-my-warp?
 

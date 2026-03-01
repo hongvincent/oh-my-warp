@@ -1,6 +1,8 @@
 # oh-my-warp 시작하기
 
-oh-my-warp를 처음 사용하는 분을 위한 한국어 가이드입니다.
+[English](getting-started.md) | **한국어**
+
+oh-my-warp를 처음 사용하는
 
 ## oh-my-warp란?
 

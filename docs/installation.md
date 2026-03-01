@@ -1,5 +1,7 @@
 # Installation Guide
 
+**English** | [한국어](installation-ko.md)
+
 ## Prerequisites
 
 - [Warp terminal](https://warp.dev) installed
