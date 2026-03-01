@@ -13,8 +13,8 @@ A curated enhancement toolkit for [Warp](https://warp.dev) terminal agents. Batt
 | **Workflows** | Reusable command shortcuts for git, docker, project setup | 3 workflow files |
 | **Theme** | Dark theme with green accents (Tokyo Night inspired) | 1 theme |
 | **Launch Config** | Multi-tab dev workspace layout | 1 config |
-| **Global Rules** | Copy-paste rules for Warp Drive | 6 rules |
-| **MCP Configs** | Recommended MCP server configurations | 4 servers |
+| **Global Rules** | Copy-paste rules for Warp Drive | 7 rules |
+| **MCP Configs** | Recommended MCP server configurations | 7 servers |
 
 ## Quick Start
 
@@ -86,11 +86,11 @@ A multi-tab layout with Code, Server, Tests, and Terminal tabs — ready to cust
 
 ### Global Rules
 
-6 pre-written rules for Warp Drive covering: Agent Workflow, Coding Standards, Communication Style, Security, Git Workflow, and Testing.
+7 pre-written rules for Warp Drive covering: Agent Workflow, Coding Standards, Communication Style, Security, Git Workflow, Testing, and Secret Protection.
 
 ### MCP Server Recommendations
 
-Tested configurations for Context7 (documentation), GitHub, Notion, and Puppeteer MCP servers.
+Tested configurations for Context7, GitHub, Notion, Puppeteer, Linear, Sentry, and Atlassian MCP servers.
 
 ## File Structure
 
@@ -123,7 +123,8 @@ oh-my-warp/
 │   └── recommended.json
 └── docs/
     ├── installation.md
-    └── customization.md
+    ├── customization.md
+    └── tips.md
 ```
 
 ## How It Works
@@ -148,6 +149,14 @@ See [docs/customization.md](docs/customization.md) for:
 - Creating custom workflows
 - Modifying the WARP.md template
 - Building custom themes
+
+See [docs/tips.md](docs/tips.md) for:
+
+- Agent Profile optimization (YOLO vs Strategic)
+- CLI automation patterns
+- Parallel agent execution
+- PR review prompt templates
+- Command allowlist/denylist patterns
 
 ## Philosophy
 

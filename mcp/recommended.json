@@ -34,5 +34,23 @@
     "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
     "env": {},
     "working_directory": null
+  },
+
+  "Linear": {
+    "_description": "Issue tracking and project management. Read/update tickets.",
+    "command": "npx",
+    "args": ["-y", "mcp-remote", "https://mcp.linear.app/sse"]
+  },
+
+  "Sentry": {
+    "_description": "Error monitoring. Investigate and fix production errors.",
+    "command": "npx",
+    "args": ["-y", "mcp-remote@latest", "https://mcp.sentry.dev/mcp"]
+  },
+
+  "Atlassian": {
+    "_description": "Jira and Confluence integration for project docs and tickets.",
+    "command": "npx",
+    "args": ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"]
   }
 }

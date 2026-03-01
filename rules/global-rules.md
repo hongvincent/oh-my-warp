@@ -67,3 +67,13 @@ Rule: Testing Practices
 - Tests must be independent — no shared mutable state
 - Both happy path and error paths covered
 ```
+
+## Rule 7: Protect Secrets
+
+```
+Rule: Protect Secrets
+- Never include or reveal secrets when generating code or commands
+- Automatically redact sensitive strings before showing output
+- Store secrets in environment variables, never inline
+- For CLI tools: compute secrets in prior steps, reference via $VAR
+```
