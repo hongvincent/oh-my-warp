@@ -3,14 +3,18 @@ name: oz-supercharged
 description: >
   Supercharged agent workflow system inspired by oh-my-claudecode.
   Activates structured multi-phase development workflows with role-based
-  mode switching (Explorer, Architect, Executor, Critic, Researcher),
-  verification protocols, and efficiency optimization.
+  mode switching (Explorer, Architect, Executor, Critic, Researcher,
+  Debugger, Security Reviewer, Test Engineer), verification protocols,
+  QA cycling, completion protocol, and escalation rules.
   Use this skill when: (1) building new features or projects,
   (2) debugging complex issues, (3) refactoring code,
-  (4) reviewing implementations, (5) onboarding to a codebase.
+  (4) reviewing implementations, (5) onboarding to a codebase,
+  (6) security auditing, (7) test-driven development, (8) fixing builds.
   Trigger keywords: autopilot, ultrawork, deep work, eco mode,
   plan, analyze, explore, review, verify, deepinit, map codebase,
-  structured workflow, thorough, fullstack, refactor, research.
+  structured workflow, thorough, fullstack, refactor, research,
+  debug, diagnose, tdd, test first, fix build, type errors,
+  security review, security audit.
 ---
 
 # Oz Supercharged

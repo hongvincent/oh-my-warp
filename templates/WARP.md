@@ -28,6 +28,16 @@ Transform tasks into verifiable goals before implementing:
 - "Fix the bug" → write a test that reproduces it, then make it pass
 - "Refactor X" → ensure tests pass before and after
 
+### Debugging Protocol
+- Reproduce before investigating — find minimal reproduction steps
+- One hypothesis at a time — show file:line evidence, not speculation
+- 3-failure circuit breaker: after 3 failed attempts, stop and reassess
+
+### Completion Protocol
+- Before claiming done: zero pending tasks, all requirements met, fresh test output shown
+- "Should work" is not verification — show concrete command output as evidence
+- If verification fails, continue working — do not claim completion
+
 ### Communication Style
 - No status preamble ("I'll work on...") — just do the work
 - No flattery — be direct and concise
