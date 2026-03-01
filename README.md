@@ -16,6 +16,13 @@ A curated enhancement toolkit for [Warp](https://warp.dev) terminal agents. Batt
 || **Global Rules** | Copy-paste rules for Warp Drive | 9 rules |
 || **MCP Configs** | Recommended MCP server configurations | 7 servers |
 
+## Getting Started
+
+**New to oh-my-warp?** Start with the beginner-friendly guides:
+
+- [Getting Started (English)](docs/getting-started.md)
+- [시작하기 (한국어)](docs/getting-started-ko.md)
+
 ## Quick Start
 
 ### Windows (PowerShell)
@@ -124,6 +131,8 @@ oh-my-warp/
 ├── mcp/
 │   └── recommended.json
 └── docs/
+    ├── getting-started.md
+    ├── getting-started-ko.md
     ├── installation.md
     ├── customization.md
     └── tips.md
