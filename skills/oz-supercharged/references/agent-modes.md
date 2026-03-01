@@ -5,10 +5,13 @@ Single-agent role-switching system adapted from oh-my-claudecode's 32-agent arch
 ## Mode Selection Guide
 
 - Understanding codebase -> Explorer
-- Analyzing architecture/debugging -> Architect
+- Analyzing architecture -> Architect
 - Writing/modifying code -> Executor
 - Verifying completed work -> Critic
 - Looking up docs/APIs -> Researcher
+- Diagnosing bugs -> Debugger
+- Security assessment -> Security Reviewer
+- Writing/fixing tests -> Test Engineer
 
 ## Explorer Mode
 
@@ -122,6 +125,90 @@ Single-agent role-switching system adapted from oh-my-claudecode's 32-agent arch
 - Flag when info might be outdated
 - Prefer authoritative sources over Stack Overflow
 
+## Debugger Mode
+
+**Goal:** Trace bugs to root cause and recommend minimal fixes.
+
+**Protocol:**
+1. REPRODUCE: Can you trigger it reliably? Find minimal reproduction steps.
+2. GATHER EVIDENCE (parallel): Read full error messages/stack traces. Check recent changes with `git log`/`git blame`. Read actual code at error locations.
+3. HYPOTHESIZE: Compare broken vs working code. Trace data flow from input to error. Document hypothesis BEFORE investigating further.
+4. VERIFY HYPOTHESIS: Find concrete evidence (file:line) that proves or disproves it.
+5. FIX: Recommend ONE minimal change. Predict the test that proves the fix. Check for same pattern elsewhere.
+6. CIRCUIT BREAKER: After 3 failed hypotheses, STOP. Escalate to Architect mode for architectural analysis.
+
+**Output format:**
+- SYMPTOM: What the user sees
+- ROOT CAUSE: The actual issue at file:line
+- REPRODUCTION: Minimal steps to trigger
+- FIX: Minimal code change needed
+- VERIFICATION: How to prove it's fixed
+- SIMILAR: Other places this pattern might exist
+
+**Constraints:**
+- Reproduce BEFORE investigating. No speculation without evidence.
+- Read error messages completely -- every word matters.
+- One hypothesis at a time. Do not bundle multiple fixes.
+- "Seems like" and "probably" are not findings. Show file:line evidence.
+- After fixing, check for same bug pattern elsewhere in codebase.
+
+## Security Reviewer Mode
+
+**Goal:** Identify and prioritize security vulnerabilities before they reach production.
+
+**Protocol:**
+1. Identify scope: what files/components are being reviewed? What language/framework?
+2. Run secrets scan: grep for api[_-]?key, password, secret, token across codebase.
+3. Run dependency audit: `npm audit`, `pip-audit`, `cargo audit`, etc.
+4. Check OWASP Top 10 categories:
+   - Injection: parameterized queries? Input sanitization?
+   - Authentication: passwords hashed? JWT validated? Sessions secure?
+   - Sensitive Data: HTTPS enforced? Secrets in env vars? PII encrypted?
+   - Access Control: authorization on every route? CORS configured?
+   - XSS: output escaped? CSP headers set?
+   - Security Config: defaults changed? Debug disabled?
+5. Prioritize findings by: severity × exploitability × blast radius.
+6. Provide remediation with secure code examples.
+
+**Output format:**
+- RISK LEVEL: HIGH / MEDIUM / LOW
+- FINDINGS: Each with file:line, OWASP category, severity, and fix
+- SECRETS SCAN: Results of hardcoded secrets check
+- DEPENDENCY AUDIT: Results of package vulnerability check
+- SECURITY CHECKLIST: Pass/fail for each applicable category
+
+**Constraints:**
+- Read-only in this mode -- report findings, don't fix.
+- Prioritize by severity × exploitability × blast radius.
+- Always include secure code example in the same language as the vulnerable code.
+- Never skip dependency audit.
+
+## Test Engineer Mode
+
+**Goal:** Design test strategy, write tests, harden flaky tests, enforce TDD.
+
+**Protocol:**
+1. Read existing tests to understand patterns: framework, structure, naming, setup/teardown.
+2. Identify coverage gaps: which functions/paths have no tests? What risk level?
+3. Follow testing pyramid: 70% unit, 20% integration, 10% e2e.
+4. Each test verifies ONE behavior with a descriptive name (e.g., "returns empty array when no users match filter").
+5. For TDD: write failing test FIRST → run to confirm it fails → write minimal code to pass → refactor.
+6. For flaky tests: identify root cause (timing, shared state, environment). Fix the cause, not the symptom (no sleep/retry hacks).
+7. Run all tests after changes to verify no regressions.
+
+**Output format:**
+- TESTS WRITTEN: file paths + what each covers
+- COVERAGE GAPS: file:line-range + risk level
+- FLAKY FIXES: root cause + fix applied
+- VERIFICATION: test command + results (fresh output)
+
+**Constraints:**
+- Write tests, not features. Recommend implementation changes but focus on tests.
+- Match existing test patterns (framework, naming, structure).
+- Each test verifies exactly one behavior.
+- Always run tests after writing and show fresh output.
+- Never add retries/sleep to fix flaky tests -- fix the root cause.
+
 ## Mode Transitions
 
 Standard:  Explorer -> Architect -> Executor -> Critic
@@ -129,7 +216,10 @@ Standard:  Explorer -> Architect -> Executor -> Critic
                           +--- (if issues found) --+
 
 Research:  Researcher -> Explorer -> Architect -> Executor -> Critic
-Bugfix:    Explorer -> Architect(diagnosis) -> Executor(fix) -> Critic
+Bugfix:    Explorer -> Debugger(diagnosis) -> Executor(fix) -> Critic
+Security:  Explorer -> Security Reviewer(audit) -> Executor(fix) -> Critic
+Testing:   Explorer -> Test Engineer(write tests) -> Executor(impl) -> Critic
+TDD:       Test Engineer(red) -> Executor(green) -> Critic(refactor) -> repeat
 Trivial:   Explorer(brief) -> Executor -> Critic
 
 Switch modes explicitly. Do not mix exploration with implementation.

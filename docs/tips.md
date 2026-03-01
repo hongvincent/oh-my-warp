@@ -226,3 +226,85 @@ Connect Linear or Sentry MCP to let the agent:
 - Read issue details and acceptance criteria
 - Update ticket status after implementation
 - Link PRs to issues automatically
+
+## Context Budget Management
+
+Large files exhaust the agent's context window fast. Protect the budget:
+
+### Before Reading Large Files
+
+1. **Check size first** — If a file might be large, scan its structure (function names, class outlines) before reading the whole thing
+2. **Read specific sections** — For files >200 lines, read only the relevant function or section using line ranges
+3. **Batch wisely** — Don't read more than 5 files at once in parallel. Queue the rest.
+4. **Prefer structural tools** — Use grep/search over full file reads. They return only matching lines without consuming context on boilerplate.
+
+### Add This to Your WARP.md
+
+```markdown
+## Context Budget
+- For files >200 lines: scan structure first, then read specific sections
+- Prefer grep/search over full file reads
+- Batch file reads: max 5 in parallel
+```
+
+## TDD Quick Start
+
+Test-Driven Development produces better designs and catches bugs early. Here's how to use it with Warp:
+
+### Trigger TDD Mode
+
+Say `tdd` or `test first` to activate. The agent will follow RED → GREEN → REFACTOR:
+
+1. **RED**: Write a failing test for the next piece of behavior
+2. **GREEN**: Write only enough code to make it pass
+3. **REFACTOR**: Clean up without changing behavior
+4. **REPEAT**: Next failing test
+
+### Example Prompt
+
+```
+tdd: Add email validation to the signup form. Start with the test for invalid email format.
+```
+
+### Key Rules
+
+- No production code without a failing test first
+- Each test verifies ONE behavior
+- Test names describe expected behavior: `rejects email without @ symbol`
+- Match existing test framework and patterns in the project
+
+## Debugging Workflow Tips
+
+### Trigger Debug Mode
+
+Say `debug` or `diagnose` to activate structured debugging:
+
+1. **Reproduce** — Find minimal steps to trigger the bug
+2. **Gather evidence** — Error messages, stack traces, git blame
+3. **Hypothesize** — One theory at a time, with evidence
+4. **Fix** — Minimal change, then check for same pattern elsewhere
+
+### Circuit Breaker
+
+If 3 fix attempts fail, the agent should stop trying variations and:
+- Summarize what was attempted
+- Switch to architectural analysis
+- Or ask for human guidance
+
+### Example Prompt
+
+```
+debug: Users are getting 500 errors on the /api/profile endpoint. 
+Here's the error log: [paste error]
+```
+
+### Add Debug Context to WARP.md
+
+Help the agent debug faster by documenting common issues:
+
+```markdown
+## Common Issues
+- Auth errors: Check JWT expiry in src/middleware/auth.ts
+- DB connection: Verify DATABASE_URL in .env, check connection pool in src/db/pool.ts
+- Build failures: Run `npm run clean` first, then `npm run build`
+```

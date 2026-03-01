@@ -8,13 +8,13 @@ A curated enhancement toolkit for [Warp](https://warp.dev) terminal agents. Batt
 
 | Component | Description | Count |
 |-----------|-------------|-------|
-| **Skills** | Structured agent workflow system with role-based modes | 1 skill (4 files) |
-| **WARP.md Template** | Universal project rules with OMC-inspired best practices | 1 template |
-| **Workflows** | Reusable command shortcuts for git, docker, project setup | 3 workflow files |
-| **Theme** | Dark theme with green accents (Tokyo Night inspired) | 1 theme |
-| **Launch Config** | Multi-tab dev workspace layout | 1 config |
-| **Global Rules** | Copy-paste rules for Warp Drive | 7 rules |
-| **MCP Configs** | Recommended MCP server configurations | 7 servers |
+| **Skills** | Structured agent workflow system with role-based modes | 1 skill (5 files) |
+|| **WARP.md Template** | Universal project rules with OMC-inspired best practices | 1 template |
+|| **Workflows** | Reusable command shortcuts for git, docker, project setup | 3 workflow files |
+|| **Theme** | Dark theme with green accents (Tokyo Night inspired) | 1 theme |
+|| **Launch Config** | Multi-tab dev workspace layout | 1 config |
+|| **Global Rules** | Copy-paste rules for Warp Drive | 9 rules |
+|| **MCP Configs** | Recommended MCP server configurations | 7 servers |
 
 ## Quick Start
 
@@ -53,11 +53,12 @@ chmod +x setup.sh
 
 A structured development workflow system that teaches Warp's agent (Oz) to follow the **EXPLORE → PLAN → EXECUTE → VERIFY** pipeline. Includes:
 
-- **5 Agent Modes**: Explorer, Architect, Executor, Critic, Researcher
-- **Keyword Triggers**: `autopilot`, `ultrawork`, `eco`, `plan`, `deepinit`, `review`, `research`
-- **Task Templates**: Exploration, Implementation, Review, Debugging, Research
-- **Verification Protocol**: BUILD → LINT → TEST → FUNCTIONALITY
+- **8 Agent Modes**: Explorer, Architect, Executor, Critic, Researcher, Debugger, Security Reviewer, Test Engineer
+- **Keyword Triggers**: `autopilot`, `ultrawork`, `eco`, `plan`, `deepinit`, `review`, `research`, `debug`, `tdd`, `fix build`, `security review`
+- **8 Task Templates**: Exploration, Implementation, Review, Debugging, Research, TDD, Build Fix, Security Review
+- **Verification Protocol**: BUILD → LINT → TEST → FUNCTIONALITY + QA cycling + completion protocol
 - **Deepinit**: Generate per-directory `AGENTS.md` files for codebase onboarding
+- **Escalation**: 3-failure circuit breaker, structured escalation rules
 
 ### WARP.md Template
 
@@ -86,7 +87,7 @@ A multi-tab layout with Code, Server, Tests, and Terminal tabs — ready to cust
 
 ### Global Rules
 
-7 pre-written rules for Warp Drive covering: Agent Workflow, Coding Standards, Communication Style, Security, Git Workflow, Testing, and Secret Protection.
+9 pre-written rules for Warp Drive covering: Agent Workflow, Coding Standards, Communication Style, Security, Git Workflow, Testing, Secret Protection, Debugging Protocol, and Completion Protocol.
 
 ### MCP Server Recommendations
 
@@ -108,7 +109,8 @@ oh-my-warp/
 │       └── references/
 │           ├── agent-modes.md
 │           ├── task-templates.md
-│           └── deepinit-guide.md
+│           ├── deepinit-guide.md
+│           └── verification-loops.md
 ├── workflows/
 │   ├── git-essentials.yaml
 │   ├── docker-dev.yaml
@@ -157,6 +159,9 @@ See [docs/tips.md](docs/tips.md) for:
 - Parallel agent execution
 - PR review prompt templates
 - Command allowlist/denylist patterns
+- Context budget management
+- TDD quick-start guide
+- Debugging workflow patterns
 
 ## Philosophy
 

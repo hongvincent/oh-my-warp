@@ -77,3 +77,26 @@ Rule: Protect Secrets
 - Store secrets in environment variables, never inline
 - For CLI tools: compute secrets in prior steps, reference via $VAR
 ```
+
+## Rule 8: Debugging Protocol
+
+```
+Rule: Debugging Protocol
+- Reproduce the bug BEFORE investigating — find minimal reproduction steps
+- Read error messages completely — every word matters, not just the first line
+- One hypothesis at a time — test and verify before trying the next
+- "Seems like" and "probably" are not findings — show file:line evidence
+- 3-failure circuit breaker: after 3 failed fix attempts, stop and reassess the approach
+- After fixing, check for the same bug pattern elsewhere in the codebase
+```
+
+## Rule 9: Completion Protocol
+
+```
+Rule: Completion Protocol
+- Before claiming done: zero pending tasks, all requirements met, fresh test output shown
+- "Should work" is not verification — show concrete command output as evidence
+- No scope reduction — implement ALL requirements, don't quietly drop features
+- Remove debug leftovers (console.log, debugger, HACK, TODO) from final code
+- If verification fails, continue working — do not claim completion
+```

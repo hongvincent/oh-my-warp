@@ -118,3 +118,99 @@ Use when investigating external libraries, APIs, or documentation.
 - Code examples if applicable
 - Recommended approach with rationale
 ```
+
+## TDD Template
+
+Use when building features test-first.
+
+```
+## FEATURE
+[What behavior to implement]
+
+## RED PHASE (write failing test)
+- Test file: [path]
+- Test name: [describes expected behavior, e.g. "rejects email without @ symbol"]
+- Run test command — MUST FAIL
+- If it passes, the test is wrong — fix the test
+
+## GREEN PHASE (minimal implementation)
+- Write ONLY enough code to make the test pass
+- No extras. No "while I'm here."
+- Run test — MUST PASS
+
+## REFACTOR PHASE (clean up)
+- Improve code quality without changing behavior
+- Run tests after EVERY change — MUST STAY GREEN
+
+## REPEAT
+- Next failing test for the next behavior
+- Continue cycle until feature is complete
+
+## ENFORCEMENT
+- Code written before test? DELETE IT. Write test first.
+- Multiple features in one cycle? STOP. One test, one behavior.
+- Skipping refactor? Go back. Clean up before next feature.
+```
+
+## Build Fix Template
+
+Use when fixing build/compile/typecheck errors with minimal changes.
+
+```
+## ERRORS
+[Paste or run build/typecheck output]
+
+## STRATEGY
+1. Collect all errors — run build or typecheck command
+2. Categorize: type errors, import errors, missing deps, syntax errors
+3. Fix one error at a time — verify no new errors after each fix
+4. Stop when build passes (exit code 0)
+
+## CONSTRAINTS
+- NO refactoring of unrelated code
+- NO architectural changes
+- NO performance optimizations
+- ONLY what's needed to make the build pass
+- Minimal diff — fewest lines changed
+
+## VERIFICATION
+- [ ] Build/typecheck command exits with 0
+- [ ] No new errors introduced
+- [ ] Existing tests still pass
+```
+
+## Security Review Template
+
+Use when auditing code for security vulnerabilities.
+
+```
+## SCOPE
+[Files/components to review]
+
+## SECRETS SCAN
+- grep for: api[_-]?key, password, secret, token, credential
+- Check: .env files tracked in git? Secrets in source code?
+
+## DEPENDENCY AUDIT
+- Run: npm audit / pip-audit / cargo audit / govulncheck
+- Flag: known vulnerabilities, outdated packages
+
+## OWASP TOP 10 CHECK
+- [ ] Injection: parameterized queries? Input sanitized?
+- [ ] Auth: passwords hashed? JWT validated? Sessions secure?
+- [ ] Sensitive Data: HTTPS? Secrets in env vars? PII encrypted?
+- [ ] Access Control: authorization on every route? CORS configured?
+- [ ] XSS: output escaped? CSP headers?
+- [ ] Security Config: debug disabled? Defaults changed?
+
+## OUTPUT FORMAT
+For each finding:
+- Severity: CRITICAL / HIGH / MEDIUM / LOW
+- Location: file:line
+- OWASP category
+- Issue description
+- Remediation with secure code example
+
+## PRIORITY
+Rank by: severity × exploitability × blast radius
+```

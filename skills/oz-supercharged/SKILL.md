@@ -25,6 +25,7 @@ Structured development workflow system. Follow these principles and phases for e
 4. **Consult docs for SDKs/APIs** -- Use MCP Context7 or official documentation before implementing with unfamiliar libraries.
 5. **Minimal changes** -- Do exactly what's needed. No drive-by refactoring, no scope creep, no "while I'm here" changes.
 6. **Stay in your lane** -- Don't mix exploration with implementation. Complete one phase before starting the next.
+7. **Evidence over assumptions** -- "Should work" is not evidence. Show fresh command output proving claims.
 
 ## Workflow Phases
 
@@ -40,6 +41,7 @@ Switch to Explorer mode. See [agent-modes.md](references/agent-modes.md).
 - Identify patterns, conventions, dependencies
 - Check for existing similar implementations
 - Read AGENTS.md files if present in the project
+- **Context budget**: For files >200 lines, scan structure first (function names, class outlines), then read specific sections. Don't read entire large files unless necessary.
 
 ### Phase 2: Plan
 Switch to Architect mode. See [agent-modes.md](references/agent-modes.md).
@@ -60,6 +62,7 @@ Switch to Critic mode. See [agent-modes.md](references/agent-modes.md).
 - Run verification checklist: BUILD -> LINT -> TEST -> FUNCTIONALITY
 - Report results clearly
 - If issues found: loop back to Execute to fix, then re-verify
+- For complex changes, use QA cycling. See [verification-loops.md](references/verification-loops.md).
 
 ## Verification Protocol
 
@@ -97,7 +100,11 @@ Full autonomous workflow. Execute all 4 phases without pausing for approval on e
 Maximum thoroughness. Extended exploration, detailed planning, comprehensive verification. Read more files, check more edge cases.
 
 ### "eco" / "efficient" / "quick"
-Token-efficient mode. Minimal exploration, skip planning for clear tasks, essential verification only. Prefer concise output.
+Token-efficient mode. Route effort to minimum viable level:
+- Skip exploration for obvious tasks. Brief exploration for others.
+- Skip planning unless task touches 5+ files.
+- Essential verification only (build + affected tests).
+- Prefer concise output. Batch related changes.
 
 ### "plan" / "analyze"
 Stop after Phase 2 (Plan). Present the plan for user review. Do not execute until approved.
@@ -105,11 +112,23 @@ Stop after Phase 2 (Plan). Present the plan for user review. Do not execute unti
 ### "deepinit" / "map codebase"
 Generate AGENTS.md files for the project. See [deepinit-guide.md](references/deepinit-guide.md).
 
-### "review" / "verify"
+### "review" / "review code"
 Run Critic mode on recent changes or specified code. See [agent-modes.md](references/agent-modes.md).
 
 ### "research" / "investigate"
 Switch to Researcher mode. Focus on gathering information from docs, MCP, and codebase. See [agent-modes.md](references/agent-modes.md).
+
+### "debug" / "diagnose" / "trace bug"
+Switch to Debugger mode. Root-cause analysis with structured diagnosis. See [agent-modes.md](references/agent-modes.md).
+
+### "tdd" / "test first"
+Switch to Test Engineer mode with TDD enforcement. RED → GREEN → REFACTOR cycle. See [agent-modes.md](references/agent-modes.md) and [task-templates.md](references/task-templates.md).
+
+### "fix build" / "type errors" / "build broken"
+Build fix mode. Minimal-diff error fixing strategy. See [task-templates.md](references/task-templates.md).
+
+### "security review" / "security audit"
+Switch to Security Reviewer mode. OWASP-based vulnerability assessment. See [agent-modes.md](references/agent-modes.md).
 
 ## Project Context Discovery
 
@@ -122,6 +141,25 @@ At the start of any complex task, look for these context sources in order:
 6. .eslintrc / ruff.toml / similar (linting config)
 7. CI config files (.github/workflows/, etc.)
 
+## Completion Protocol
+
+Before claiming a task is complete, verify ALL of these. See [verification-loops.md](references/verification-loops.md) for details.
+
+1. Zero pending TODO items
+2. All requirements from the original task are met (no scope reduction)
+3. Fresh build/test output shown (not assumed)
+4. No temporary/debug leftovers (console.log, debugger, HACK, TODO)
+5. Verification evidence included in response
+
+If any item fails, continue working. Do not claim completion.
+
+## Escalation Rules
+
+- **3-failure circuit breaker**: After 3 failed attempts at the same fix, STOP. Summarize attempts, switch to Architect mode or ask the user.
+- **Continue working** when: subtask fails but others can proceed, build error after code change (normal), test failure reveals real bug.
+- **Stop and report** when: blocked by credentials/permissions, fundamental architecture issue, unclear requirements, same error persists 3+ times.
+- **Ask user** only after: searching the codebase, checking docs, trying at least one interpretation.
+
 ## Anti-Patterns
 
 Avoid these common mistakes:
@@ -131,3 +169,5 @@ Avoid these common mistakes:
 - **Skipping verification** -- Assuming changes work without running checks
 - **Ignoring conventions** -- Using different patterns than the existing codebase
 - **Over-engineering** -- Adding complexity for hypothetical future needs
+- **Claiming done without evidence** -- "Should work" is not verification
+- **Infinite retry loop** -- Trying variations of the same failed approach instead of escalating
