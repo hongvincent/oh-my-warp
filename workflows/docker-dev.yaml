@@ -1,0 +1,44 @@
+---
+name: Docker Compose Up (detached)
+command: docker compose up -d {{service}}
+tags: ["docker", "oh-my-warp"]
+arguments:
+  - name: service
+    description: "Service name (leave empty for all)"
+    default_value: ""
+---
+name: Docker Compose Down + Volumes
+command: docker compose down --volumes --remove-orphans
+tags: ["docker", "oh-my-warp"]
+---
+name: Docker Compose Logs (follow)
+command: docker compose logs -f --tail={{lines}} {{service}}
+tags: ["docker", "oh-my-warp"]
+arguments:
+  - name: lines
+    description: "Number of tail lines"
+    default_value: "100"
+  - name: service
+    description: "Service name (leave empty for all)"
+    default_value: ""
+---
+name: Docker Compose Rebuild
+command: docker compose build --no-cache {{service}} && docker compose up -d {{service}}
+tags: ["docker", "oh-my-warp"]
+arguments:
+  - name: service
+    description: "Service to rebuild"
+---
+name: Docker System Prune
+command: docker system prune -af --volumes
+tags: ["docker", "oh-my-warp"]
+---
+name: Docker Exec Shell
+command: docker exec -it {{container}} {{shell}}
+tags: ["docker", "oh-my-warp"]
+arguments:
+  - name: container
+    description: "Container name or ID"
+  - name: shell
+    description: "Shell to use"
+    default_value: "/bin/sh"

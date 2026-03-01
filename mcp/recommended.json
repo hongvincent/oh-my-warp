@@ -1,0 +1,38 @@
+{
+  "_comment": "Recommended MCP server configurations for Warp. Add these via Settings > MCP Servers.",
+
+  "Context7": {
+    "_description": "Fetch up-to-date library/framework documentation. Essential for SDK/API work.",
+    "command": "npx",
+    "args": ["-y", "@upstash/context7-mcp"],
+    "env": {},
+    "working_directory": null
+  },
+
+  "GitHub": {
+    "_description": "GitHub integration for PRs, issues, and repo management.",
+    "command": "docker",
+    "args": [
+      "run", "-i", "--rm",
+      "-e", "GITHUB_PERSONAL_ACCESS_TOKEN",
+      "ghcr.io/github/github-mcp-server"
+    ],
+    "env": {
+      "GITHUB_PERSONAL_ACCESS_TOKEN": "${YOUR_GITHUB_PAT}"
+    }
+  },
+
+  "Notion": {
+    "_description": "Access Notion pages and databases for project documentation.",
+    "command": "npx",
+    "args": ["-y", "mcp-remote", "https://mcp.notion.com/mcp"]
+  },
+
+  "Puppeteer": {
+    "_description": "Browser automation for web scraping and testing.",
+    "command": "npx",
+    "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
+    "env": {},
+    "working_directory": null
+  }
+}

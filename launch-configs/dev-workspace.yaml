@@ -1,0 +1,27 @@
+# oh-my-warp Dev Workspace Launch Configuration
+#
+# Opens a multi-tab layout for typical development work.
+# Customize the `cwd` paths to match your project directories.
+
+---
+name: Dev Workspace
+windows:
+  - tabs:
+      - title: Code
+        layout:
+          cwd: ""
+          commands:
+            - exec: git status
+        color: blue
+      - title: Server
+        layout:
+          cwd: ""
+        color: green
+      - title: Tests
+        layout:
+          cwd: ""
+        color: yellow
+      - title: Terminal
+        layout:
+          cwd: ""
+        color: default

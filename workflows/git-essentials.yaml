@@ -1,0 +1,42 @@
+---
+name: Git Status + Diff
+command: git status && git --no-pager diff --stat
+tags: ["git", "oh-my-warp"]
+---
+name: Git Log (compact)
+command: git --no-pager log --oneline --graph --decorate -{{count}}
+tags: ["git", "oh-my-warp"]
+arguments:
+  - name: count
+    description: Number of commits to show
+    default_value: "20"
+---
+name: Git Commit (conventional)
+command: git add -A && git commit -m "{{type}}({{scope}}): {{description}}"
+tags: ["git", "oh-my-warp"]
+arguments:
+  - name: type
+    description: "Commit type: feat, fix, refactor, docs, test, chore, perf, ci"
+  - name: scope
+    description: "Scope of the change (e.g. auth, api, ui)"
+  - name: description
+    description: "Short description of the change"
+---
+name: Git Stash Save + Pop
+command: git stash push -m "{{message}}"
+tags: ["git", "oh-my-warp"]
+arguments:
+  - name: message
+    description: "Stash message"
+---
+name: Git Branch Cleanup
+command: git branch --merged main | grep -v "main" | xargs -r git branch -d
+tags: ["git", "oh-my-warp"]
+---
+name: Git Diff Full (base to HEAD)
+command: git --no-pager diff {{base}}...HEAD
+tags: ["git", "oh-my-warp"]
+arguments:
+  - name: base
+    description: "Base branch to diff against"
+    default_value: "main"

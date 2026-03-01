@@ -1,0 +1,25 @@
+name: Oz Dark
+accent: '#4EC9B0'
+cursor: '#4EC9B0'
+background: '#1A1B26'
+foreground: '#C0CAF5'
+details: darker
+terminal_colors:
+  bright:
+    black: '#414868'
+    red: '#F7768E'
+    green: '#9ECE6A'
+    yellow: '#E0AF68'
+    blue: '#7AA2F7'
+    magenta: '#BB9AF7'
+    cyan: '#7DCFFF'
+    white: '#C0CAF5'
+  normal:
+    black: '#1A1B26'
+    red: '#F7768E'
+    green: '#9ECE6A'
+    yellow: '#E0AF68'
+    blue: '#7AA2F7'
+    magenta: '#BB9AF7'
+    cyan: '#7DCFFF'
+    white: '#A9B1D6'

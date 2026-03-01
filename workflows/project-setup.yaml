@@ -1,0 +1,30 @@
+---
+name: Node.js Project Init
+command: mkdir -p {{name}} && cd {{name}} && npm init -y && mkdir -p src tests && echo "node_modules/" > .gitignore && git init
+tags: ["setup", "node", "oh-my-warp"]
+arguments:
+  - name: name
+    description: "Project directory name"
+---
+name: Python Project Init
+command: mkdir -p {{name}} && cd {{name}} && python -m venv .venv && echo -e ".venv/\n__pycache__/\n*.pyc\ndist/\n*.egg-info/" > .gitignore && mkdir -p src tests && git init
+tags: ["setup", "python", "oh-my-warp"]
+arguments:
+  - name: name
+    description: "Project directory name"
+---
+name: Init WARP.md from Template
+command: cp {{template_path}} ./WARP.md && echo "WARP.md created — edit the [CUSTOMIZE] sections"
+tags: ["setup", "warp", "oh-my-warp"]
+arguments:
+  - name: template_path
+    description: "Path to WARP.md template"
+    default_value: "~/.warp/templates/WARP.md"
+---
+name: Init .gitignore (universal)
+command: "curl -sL https://www.toptal.com/developers/gitignore/api/{{languages}} -o .gitignore"
+tags: ["setup", "git", "oh-my-warp"]
+arguments:
+  - name: languages
+    description: "Comma-separated: node,python,go,rust,java,etc"
+    default_value: "node,python"
