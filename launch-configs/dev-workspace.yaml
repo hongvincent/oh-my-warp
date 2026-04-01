@@ -24,4 +24,4 @@ windows:
       - title: Terminal
         layout:
           cwd: ""
-        color: default
+        color: cyan

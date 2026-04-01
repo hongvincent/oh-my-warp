@@ -2,174 +2,185 @@
 
 **English** | [한국어](tips-ko.md)
 
-Advanced techniques for getting the most out of Warp's agent capabilities.
+This guide focuses on **official local Oz features** that give you the most leverage inside Warp.
 
-## Agent Profiles: YOLO vs Strategic
+## 1. Build the Right Agent Profiles
 
-Warp lets you create multiple Agent Profiles with different autonomy levels. Set up two profiles for different situations:
+Profiles let you tune autonomy, models, command permissions, and MCP access for different situations.
 
-### YOLO Profile (high autonomy)
+### Prod mode profile
 
-For trusted environments (local dev, sandboxed containers). Auto-approves most commands.
+Use for unfamiliar repositories or sensitive environments.
 
-**Settings > AI > Agents > New Profile:**
-- Name: `YOLO`
-- Autonomy: High
-- Command Allowlist (regex patterns):
+**Suggested settings**
+- Code diffs: `Always ask`
+- Read files: `Agent decides`
+- Create plans: `Agent decides`
+- Execute commands: `Always ask`
+- Full Terminal Use writes: `Always ask`
+- MCP servers: allow only the ones you trust
+
+### Default profile
+
+Use for normal development in a local repository you trust.
+
+**Suggested settings**
+- Code diffs: `Agent decides`
+- Read files: `Always allow`
+- Create plans: `Always allow`
+- Execute commands: `Agent decides`
+- Full Terminal Use writes: `Ask on first write`
+
+### YOLO mode profile
+
+Use only for throwaway or highly trusted local work.
+
+**Suggested settings**
+- Most permissions: `Always allow`
+- Keep a command denylist for destructive commands you never want silently approved
+
+### Useful allowlist starters
 
 ```regex
 which .*
-ls(\s.*)?
-cat .*
-grep(\s.*)?
+ls(\\s.*)?
+grep(\\s.*)?
 find .*
-echo(\s.*)?
 git (status|log|diff|branch|show|blame).*
 npm (run|test|list|outdated).*
-cargo (check|clippy|test|build).*
 python -m pytest.*
 ruff .*
-node .*
-wc .*
-head .*
-tail .*
 ```
 
-### Strategic Profile (careful autonomy)
-
-For sensitive environments. Only auto-approves read-only commands.
-
-**Settings > AI > Agents > New Profile:**
-- Name: `Strategic`
-- Autonomy: Low
-- Command Allowlist (minimal):
-
-```regex
-which .*
-ls(\s.*)?
-grep(\s.*)?
-echo(\s.*)?
-```
-
-- Command Denylist (blocks dangerous commands — denylist takes precedence):
-
-```regex
-rm -rf.*
-sudo.*
-chmod 777.*
-curl.*\| sh
-wget.*\| sh
-```
-
-### Using Profiles via CLI
+### CLI usage
 
 ```bash
-# List profiles
-warp agent profile list
+# List available profiles
+oz agent profile list
 
-# Run with YOLO profile
-warp agent run --profile <YOLO_PROFILE_ID> --prompt "refactor the auth module"
-
-# Run with Strategic profile for production work
-warp agent run --profile <STRATEGIC_PROFILE_ID> --prompt "update database migrations"
+# Run with a specific profile
+oz agent run --profile <PROFILE_ID> --prompt "analyze this repository"
 ```
 
-## CLI Automation
+## 2. Lean on `/plan` and Task Lists
 
-Warp's CLI (`warp agent run`) lets you script agent tasks and run them headlessly.
+Warp's built-in planning and task lists are the safest way to structure larger changes.
 
-### Basic Usage
+- Use `/plan` for anything multi-step or unclear
+- Let Oz create task lists automatically for complex requests
+- Reopen plans and task lists while the work is running
+- Revise the plan if the shape of the work changes
+
+Example prompts:
+
+```text
+/plan Refactor the local install flow to use official skill discovery paths.
+```
+
+```text
+Implement phase 1 of the current plan and stop after updating the docs.
+```
+
+## 3. Use Full Terminal Use for Interactive Work
+
+Full Terminal Use is the official way to let Oz operate inside REPLs, debuggers, database shells, and dev servers.
+
+Good fits:
+- `npm run dev`
+- `python`
+- `psql`
+- `gdb`
+- long-running local servers
+
+Useful controls:
+- `⌘I` on macOS / `Ctrl+I` on Windows and Linux: switch between shell and agent input when needed
+- `⌘⇧I` on macOS / `Ctrl+Shift+I` on Windows and Linux: toggle auto-accept while the task is running
+
+Use it when the task depends on observing live terminal state, not just static files.
+
+## 4. Review Non-trivial Changes in Code Review
+
+For Git-indexed repositories, let Oz generate diffs and inspect them in Warp's code review flow.
+
+Best practices:
+- Ask Oz to surface a diff instead of blindly applying it
+- Leave inline comments on specific hunks
+- Batch comments, then ask Oz to address them in one pass
+- Repeat until the diff is clean
+
+Example prompt:
+
+```text
+/code-review-local Review the current diff for logic risks and suggest follow-up comments I should leave.
+```
+
+## 5. Keep Codebase Context Healthy
+
+Codebase Context is one of the biggest quality multipliers for local Oz work.
+
+Recommendations:
+- Work in Git-indexed repositories
+- Keep indexing enabled in Warp's code settings
+- Add `.warpindexingignore` when a repository is too large or contains noisy generated files
+- Mention exact repo names when using multi-repo context
+
+For large repositories, use ignore files aggressively:
+- `.gitignore`
+- `.warpindexingignore`
+- `.cursorignore`
+- `.cursorindexingignore`
+
+## 6. Use MCP as the Tool Layer
+
+Treat MCP servers as Warp's plugin layer for local Oz.
+
+Suggested bundle:
+- **Context7** for up-to-date docs
+- **GitHub** for repository, PR, and issue context
+- **Linear / Sentry / Atlassian / Notion** only when you actively use them
+
+CLI example:
 
 ```bash
-# Simple prompt
-warp agent run --prompt "analyze this codebase"
-
-# With API key (for CI/automation)
-export WARP_API_KEY="wk-xxx..."
-warp agent run --prompt "run tests and fix failures"
-
-# With saved prompt
-warp agent run --saved-prompt <PROMPT_ID>
-
-# With MCP server
-warp agent run --mcp-server "<MCP_UUID>" --prompt "check for errors"
-
-# With notebook context
-warp agent run --prompt "Follow the instructions in <notebook:ID>"
+oz agent run --mcp ./mcp/recommended.json --prompt "Use Context7 to review the latest Warp skills documentation."
 ```
 
-### Chaining Agents
+If you do not need every server, create a smaller JSON file and pass that instead.
 
-Use the CLI to run sequential agent tasks:
+## 7. Use `oz agent run` for Headless Local Work
+
+The local CLI is useful for repeatable repository work, scripted verification, or running the same task under different profiles.
+
+Examples:
 
 ```bash
-# Step 1: Analyze
-warp agent run --prompt "analyze the auth module and list all security issues"
-
-# Step 2: Fix (after reviewing step 1 output)
-warp agent run --prompt "fix the security issues found in the auth module"
-
-# Step 3: Verify
-warp agent run --prompt "run all tests and verify no regressions"
+oz agent run --prompt "summarize the current directory"
 ```
 
-## Parallel Agent Execution
-
-Warp supports running multiple agents in parallel across tabs. Use this for independent tasks:
-
-**Example: 3 agents in parallel**
-1. Tab 1: `Summarize Cloud Run logs for the last hour`
-2. Tab 2: `Analyze all open PRs assigned to me`
-3. Tab 3: `Update UI component styles`
-
-Each tab runs its own agent instance. Use Launch Configurations to set up multi-tab layouts for this.
-
-## PR Review Prompt Template
-
-A structured prompt for thorough pull request reviews. Copy this into a Warp saved prompt or use directly:
-
-```
-Review this pull request and format for rapid scanning:
-
-### 1. Risk Assessment
-Overall Risk: HIGH | MEDIUM | LOW
-Complexity: Simple | Moderate | Complex
-Blast Radius: Isolated | Module-wide | System-wide
-
-### 2. Critical Issues
-For each: File:Line, Impact, Fix suggestion
-
-### 3. Concerns
-Prefix with: [SECURITY], [PERFORMANCE], [LOGIC], [STYLE]
-
-### 4. Maintainer Decision Guide
-Merge confidence: 0-100%
-Recommended action: merge / fix blockers / needs discussion / split PR
-Time to review: ~X minutes
-
-### 5. Rules
-- Blockers get full detail, everything else stays concise
-- Include code examples only for blockers
-- If PR is fine: "This PR is safe to merge as-is."
+```bash
+oz agent run --profile <PROFILE_ID> --prompt "run tests and explain the failures"
 ```
 
-## Secret Protection
-
-Add this as a Warp global rule to prevent accidental secret exposure:
-
-```
-Rule: Protect Secrets
-- Never include or reveal secrets when generating code or commands.
-- Automatically redact sensitive strings before showing output.
-- Store secrets in environment variables, never inline.
-- For CLI tools: compute secrets in prior steps, reference via $VAR.
+```bash
+oz agent run --mcp ./mcp/recommended.json --prompt "look up the current SDK docs before editing code"
 ```
 
-## Effective WARP.md Tips
+## 8. Parallelize Safely with Tabs and Launch Configurations
 
-### Fill in Development Commands
+If you want safe local parallelism without undocumented orchestration, use multiple Warp tabs and launch configurations.
 
-The most impactful section of WARP.md is Development Commands. Be specific:
+A practical pattern:
+1. Tab 1: active coding task
+2. Tab 2: tests or dev server
+3. Tab 3: research or docs task
+
+Use launch configurations to recreate that layout quickly.
+
+## 9. Keep `WARP.md` Concrete
+
+The fastest way to improve results is to make `WARP.md` specific.
+
+### Development commands
 
 ```markdown
 ## Development Commands
@@ -178,135 +189,38 @@ The most impactful section of WARP.md is Development Commands. Be specific:
 npm install
 
 ### Dev
-npm run dev        # starts on localhost:3000
+npm run dev
 
 ### Build
 npm run build
 
 ### Test
-npm run test       # Jest, runs all tests
-npm run test:watch # Watch mode
+npm run test
 
 ### Lint
-npm run lint       # ESLint + Prettier
-npm run typecheck  # tsc --noEmit
+npm run lint
+npm run typecheck
 ```
 
-### Add Key Component Descriptions
-
-Help the agent find code faster by listing your main files:
+### Key components
 
 ```markdown
 ## Key Components
-- `src/auth/` — Authentication (JWT + OAuth)
-- `src/api/routes/` — REST API endpoints
-- `src/db/models/` — Prisma models
+- `src/auth/` — Authentication and session logic
+- `src/api/routes/` — HTTP routes
+- `src/db/models/` — Database models
 - `src/lib/` — Shared utilities
 ```
 
-## MCP Server Tips
+## 10. Use the Bundled Skills Intentionally
 
-### Context7 for Documentation
+The skill pack in this repository is small on purpose.
 
-Always keep Context7 MCP enabled. When working with unfamiliar libraries, the agent can fetch up-to-date docs:
+- `/local-workflow` for structured local implementation
+- `/research-local` for docs and codebase research
+- `/debug-local` for bug reproduction and diagnosis
+- `/tdd-local` for test-first work
+- `/build-fix-local` for build or typecheck failures
+- `/code-review-local` for local diff review
 
-```
-Use Context7 MCP to look up the latest Next.js App Router documentation before implementing.
-```
-
-### GitHub MCP for PR Workflows
-
-With GitHub MCP enabled, the agent can:
-- List and analyze open PRs
-- Create PRs with proper descriptions
-- Check CI status
-- Review code changes
-
-### Linear/Sentry for Issue Tracking
-
-Connect Linear or Sentry MCP to let the agent:
-- Read issue details and acceptance criteria
-- Update ticket status after implementation
-- Link PRs to issues automatically
-
-## Context Budget Management
-
-Large files exhaust the agent's context window fast. Protect the budget:
-
-### Before Reading Large Files
-
-1. **Check size first** — If a file might be large, scan its structure (function names, class outlines) before reading the whole thing
-2. **Read specific sections** — For files >200 lines, read only the relevant function or section using line ranges
-3. **Batch wisely** — Don't read more than 5 files at once in parallel. Queue the rest.
-4. **Prefer structural tools** — Use grep/search over full file reads. They return only matching lines without consuming context on boilerplate.
-
-### Add This to Your WARP.md
-
-```markdown
-## Context Budget
-- For files >200 lines: scan structure first, then read specific sections
-- Prefer grep/search over full file reads
-- Batch file reads: max 5 in parallel
-```
-
-## TDD Quick Start
-
-Test-Driven Development produces better designs and catches bugs early. Here's how to use it with Warp:
-
-### Trigger TDD Mode
-
-Say `tdd` or `test first` to activate. The agent will follow RED → GREEN → REFACTOR:
-
-1. **RED**: Write a failing test for the next piece of behavior
-2. **GREEN**: Write only enough code to make it pass
-3. **REFACTOR**: Clean up without changing behavior
-4. **REPEAT**: Next failing test
-
-### Example Prompt
-
-```
-tdd: Add email validation to the signup form. Start with the test for invalid email format.
-```
-
-### Key Rules
-
-- No production code without a failing test first
-- Each test verifies ONE behavior
-- Test names describe expected behavior: `rejects email without @ symbol`
-- Match existing test framework and patterns in the project
-
-## Debugging Workflow Tips
-
-### Trigger Debug Mode
-
-Say `debug` or `diagnose` to activate structured debugging:
-
-1. **Reproduce** — Find minimal steps to trigger the bug
-2. **Gather evidence** — Error messages, stack traces, git blame
-3. **Hypothesize** — One theory at a time, with evidence
-4. **Fix** — Minimal change, then check for same pattern elsewhere
-
-### Circuit Breaker
-
-If 3 fix attempts fail, the agent should stop trying variations and:
-- Summarize what was attempted
-- Switch to architectural analysis
-- Or ask for human guidance
-
-### Example Prompt
-
-```
-debug: Users are getting 500 errors on the /api/profile endpoint. 
-Here's the error log: [paste error]
-```
-
-### Add Debug Context to WARP.md
-
-Help the agent debug faster by documenting common issues:
-
-```markdown
-## Common Issues
-- Auth errors: Check JWT expiry in src/middleware/auth.ts
-- DB connection: Verify DATABASE_URL in .env, check connection pool in src/db/pool.ts
-- Build failures: Run `npm run clean` first, then `npm run build`
-```
+Use built-in Oz features first, and use skills to make those features easier to invoke consistently.

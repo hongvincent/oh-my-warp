@@ -3,11 +3,10 @@
 .SYNOPSIS
     oh-my-warp installer for Windows.
 .DESCRIPTION
-    Installs skills, workflows, themes, launch configs, and WARP.md template.
-    Skills require Administrator privileges (installs to Program Files).
-    Other components install to user-level directories.
+    Installs skills, workflows, themes, launch configs, and WARP.md template
+    using documented user-level locations.
 .PARAMETER SkipSkills
-    Skip skill installation (avoids need for admin).
+    Skip skill installation.
 #>
 param(
     [switch]$SkipSkills
@@ -21,7 +20,7 @@ $WarpDataDir     = "$env:APPDATA\warp\Warp\data"
 $WorkflowDir     = "$WarpDataDir\workflows"
 $ThemeDir        = "$WarpDataDir\themes"
 $LaunchConfigDir = "$WarpDataDir\launch_configurations"
-$SkillDir        = "$env:PROGRAMFILES\Warp\resources\skills"
+$SkillDir        = "$env:USERPROFILE\.agents\skills"
 $TemplateDir     = "$env:USERPROFILE\.warp\templates"
 
 Write-Host ""
@@ -42,14 +41,9 @@ function Install-Files {
     Write-Host "  [OK] $Label -> $Destination" -ForegroundColor Green
 }
 
-# --- Skills (admin required) ---
+# --- Skills ---
 if (-not $SkipSkills) {
-    $isAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-    if ($isAdmin) {
-        Install-Files "$ScriptDir\skills\oz-supercharged" "$SkillDir\oz-supercharged" "Skills (oz-supercharged)"
-    } else {
-        Write-Host "  [SKIP] Skills require Administrator. Run as Admin or use -SkipSkills." -ForegroundColor Yellow
-    }
+    Install-Files "$ScriptDir\.agents\skills" $SkillDir "Skills"
 } else {
     Write-Host "  [SKIP] Skills (--SkipSkills flag)" -ForegroundColor Yellow
 }
@@ -75,6 +69,7 @@ Write-Host ""
 Write-Host "=== Installation complete ===" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Installed:" -ForegroundColor White
+Write-Host "  - Skills in $SkillDir"
 Write-Host "  - Workflows (Command Palette > search 'oh-my-warp')"
 Write-Host "  - Theme 'Oz Dark' (Settings > Appearance > Themes)"
 Write-Host "  - Launch Config 'Dev Workspace' (Settings > Sessions > Launch Configs)"

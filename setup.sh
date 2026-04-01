@@ -11,15 +11,14 @@ case "$(uname -s)" in
         WORKFLOW_DIR="$HOME/.warp/workflows"
         THEME_DIR="$HOME/.warp/themes"
         LAUNCH_DIR="$HOME/.warp/launch_configurations"
-        # macOS skill path is not publicly documented; skip for now
-        SKILL_DIR=""
+        SKILL_DIR="$HOME/.agents/skills"
         ;;
     Linux)
         DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/warp-terminal"
         WORKFLOW_DIR="$DATA_DIR/workflows"
         THEME_DIR="$DATA_DIR/themes"
         LAUNCH_DIR="$DATA_DIR/launch_configurations"
-        SKILL_DIR=""
+        SKILL_DIR="$HOME/.agents/skills"
         ;;
     *)
         echo "Unsupported OS. Use setup.ps1 for Windows."
@@ -42,15 +41,7 @@ install_files() {
 }
 
 # --- Skills ---
-if [ -n "$SKILL_DIR" ]; then
-    if [ -w "$SKILL_DIR" ] || [ "$(id -u)" -eq 0 ]; then
-        install_files "$SCRIPT_DIR/skills/oz-supercharged" "$SKILL_DIR/oz-supercharged" "Skills (oz-supercharged)"
-    else
-        echo "  [SKIP] Skills require root. Run with sudo for skill installation."
-    fi
-else
-    echo "  [SKIP] Skills (path not confirmed for this OS — install manually)"
-fi
+install_files "$SCRIPT_DIR/.agents/skills" "$SKILL_DIR" "Skills"
 
 # --- Workflows ---
 install_files "$SCRIPT_DIR/workflows" "$WORKFLOW_DIR" "Workflows"
@@ -71,6 +62,7 @@ echo ""
 echo "=== Installation complete ==="
 echo ""
 echo "Installed:"
+echo "  - Skills in $SKILL_DIR"
 echo "  - Workflows (Command Palette > search 'oh-my-warp')"
 echo "  - Theme 'Oz Dark' (Settings > Appearance > Themes)"
 echo "  - Launch Config 'Dev Workspace' (Settings > Sessions > Launch Configs)"

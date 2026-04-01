@@ -1,20 +1,34 @@
 ---
 name: Node.js Project Init
-command: mkdir -p {{name}} && cd {{name}} && npm init -y && mkdir -p src tests && echo "node_modules/" > .gitignore && git init
+description: Create a basic Node.js project layout using commands that behave the same in PowerShell and Unix shells
+command: >-
+  node -e "const fs=require('fs'); fs.mkdirSync(process.argv[1], { recursive: true });" "{{name}}" &&
+  cd "{{name}}" &&
+  npm init -y &&
+  node -e "const fs=require('fs'); fs.mkdirSync('src', { recursive: true }); fs.mkdirSync('tests', { recursive: true }); fs.writeFileSync('.gitignore', 'node_modules/\n');" &&
+  git init
 tags: ["setup", "node", "oh-my-warp"]
 arguments:
   - name: name
     description: "Project directory name"
 ---
 name: Python Project Init
-command: mkdir -p {{name}} && cd {{name}} && python -m venv .venv && echo -e ".venv/\n__pycache__/\n*.pyc\ndist/\n*.egg-info/" > .gitignore && mkdir -p src tests && git init
+description: Create a basic Python project layout using commands that behave the same in PowerShell and Unix shells
+command: >-
+  python -c "from pathlib import Path; import sys; Path(sys.argv[1]).mkdir(parents=True, exist_ok=True)" "{{name}}" &&
+  cd "{{name}}" &&
+  python -m venv .venv &&
+  python -c "from pathlib import Path; Path('src').mkdir(exist_ok=True); Path('tests').mkdir(exist_ok=True); Path('.gitignore').write_text('.venv/\n__pycache__/\n*.pyc\ndist/\n*.egg-info/\n')" &&
+  git init
 tags: ["setup", "python", "oh-my-warp"]
 arguments:
   - name: name
     description: "Project directory name"
 ---
 name: Init WARP.md from Template
-command: cp {{template_path}} ./WARP.md && echo "WARP.md created — edit the [CUSTOMIZE] sections"
+description: Copy the installed WARP.md template into the current directory in a shell-neutral way
+command: >-
+  python -c "import os, shutil, sys; shutil.copy2(os.path.expanduser(sys.argv[1]), 'WARP.md'); print('WARP.md created — edit the [CUSTOMIZE] sections')" "{{template_path}}"
 tags: ["setup", "warp", "oh-my-warp"]
 arguments:
   - name: template_path
@@ -22,7 +36,9 @@ arguments:
     default_value: "~/.warp/templates/WARP.md"
 ---
 name: Init .gitignore (universal)
-command: "curl -sL https://www.toptal.com/developers/gitignore/api/{{languages}} -o .gitignore"
+description: Create a .gitignore file from gitignore.io using Python so the workflow behaves the same on Windows and Unix shells
+command: >-
+  python -c "import sys, urllib.request; urllib.request.urlretrieve(f'https://www.toptal.com/developers/gitignore/api/{sys.argv[1]}', '.gitignore'); print('.gitignore created')" "{{languages}}"
 tags: ["setup", "git", "oh-my-warp"]
 arguments:
   - name: languages

@@ -12,7 +12,7 @@ arguments:
     default_value: "20"
 ---
 name: Git Commit (conventional)
-command: git add -A && git commit -m "{{type}}({{scope}}): {{description}}"
+command: 'git add -A && git commit -m "{{type}}({{scope}}): {{description}}"'
 tags: ["git", "oh-my-warp"]
 arguments:
   - name: type
@@ -22,16 +22,21 @@ arguments:
   - name: description
     description: "Short description of the change"
 ---
-name: Git Stash Save + Pop
+name: Git Stash Save
 command: git stash push -m "{{message}}"
 tags: ["git", "oh-my-warp"]
 arguments:
   - name: message
     description: "Stash message"
 ---
-name: Git Branch Cleanup
-command: git branch --merged main | grep -v "main" | xargs -r git branch -d
+name: Git Branch Cleanup Candidates
+description: List branches already merged into the selected base branch so you can safely delete them in any shell
+command: git branch --merged {{base}} --format="%(refname:short)"
 tags: ["git", "oh-my-warp"]
+arguments:
+  - name: base
+    description: "Base branch to inspect"
+    default_value: "main"
 ---
 name: Git Diff Full (base to HEAD)
 command: git --no-pager diff {{base}}...HEAD

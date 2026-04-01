@@ -2,24 +2,25 @@
 
 **English** | [한국어](getting-started-ko.md)
 
-A beginner-friendly guide
+A beginner-friendly guide for **official local Oz workflows**.
 
 ## What is oh-my-warp?
 
-oh-my-warp is a toolkit that makes Warp's AI agent (Oz) smarter and more structured. Instead of just asking the agent to "do something," oh-my-warp teaches it to:
+oh-my-warp helps you set up a stronger local Warp environment without relying on undocumented features.
 
-1. **Explore** the codebase first (understand before acting)
-2. **Plan** before making changes (think before coding)
-3. **Execute** with minimal, targeted changes
-4. **Verify** that everything works (test before claiming done)
+It gives you:
 
-Think of it as giving your AI assistant a professional development methodology.
+1. a small **native-only skill pack**
+2. reusable **global rules**
+3. recommended **MCP server configs**
+4. a practical **WARP.md template**
+5. local automation with **workflows** and **launch configurations**
 
 ## Prerequisites
 
 - [Warp terminal](https://warp.dev) installed and running
-- Git installed
-- Basic familiarity with terminal commands
+- Git
+- Basic familiarity with terminal workflows
 
 ## Step-by-Step Installation
 
@@ -32,148 +33,143 @@ cd oh-my-warp
 
 ### 2. Run the installer
 
-**Windows** (PowerShell):
-```powershell
-# Right-click PowerShell > Run as Administrator (needed for skills)
-.\setup.ps1
+**Windows**
 
-# Or without admin (skips skill installation):
-.\setup.ps1 -SkipSkills
+```powershell
+.\setup.ps1
 ```
 
-**macOS / Linux**:
+**macOS / Linux**
+
 ```bash
 chmod +x setup.sh
 ./setup.sh
 ```
 
-### 3. Set up Global Rules (manual step)
-
-Global rules teach the agent how to behave across all your projects.
+### 3. Add global rules
 
 1. Open Warp
-2. Type `/add-rule` in the chat
-3. Copy and paste each rule from `rules/global-rules.md` one at a time
+2. Type `/add-rule`
+3. Paste the rules from `rules/global-rules.md`
 
-There are 9 rules covering: workflow, coding standards, communication, security, git, testing, secrets, debugging, and completion.
+These rules shape Oz's behavior across projects.
 
-### 4. Set up MCP Servers (optional but recommended)
+### 4. Add MCP servers
 
-MCP servers give the agent access to external tools like documentation, GitHub, and issue trackers.
+1. Open Warp's MCP server settings
+2. Import or copy the configs from `mcp/recommended.json`
+3. Start with **Context7** if you only want one server at first
 
-1. Open Warp Settings > MCP Servers
-2. Add the configurations from `mcp/recommended.json`
-3. At minimum, add **Context7** (for library documentation)
+### 5. Add `WARP.md` to a project
 
-### 5. Add WARP.md to your project
-
-WARP.md is a per-project rules file that gives the agent context about your specific codebase.
+```powershell
+Copy-Item "$HOME\.warp\templates\WARP.md" "C:\path\to\your\project\WARP.md"
+```
 
 ```bash
-# Copy the template to your project
-cp templates/WARP.md /path/to/your/project/WARP.md
+cp ~/.warp/templates/WARP.md /path/to/your/project/WARP.md
 ```
 
-Then edit the `[CUSTOMIZE]` sections in the file with your project's details:
-- Project Overview — what your project does
-- Core Architecture — tech stack
-- Key Components — main files and directories
-- Development Commands — how to build, test, lint
+Then fill in the `[CUSTOMIZE]` sections so Oz knows your project's commands, architecture, and key directories.
 
-## How to Use
+### 6. Choose or create a profile
 
-### Basic Usage
+Set up a profile that matches your local workflow:
+- **Prod mode** for cautious or sensitive work
+- **Safe** for cautious work
+- **Default** for normal development
+- **YOLO mode** for highly trusted local sandboxes
 
-Just chat with Oz (Warp's agent) normally. The installed skill automatically activates when relevant.
+## How to Use It
 
-### Keyword Triggers
+### Use the bundled skills directly
 
-Use these magic words to activate specific modes:
+You can call the skills with slash commands or natural language:
 
-| Keyword | What it does |
-|---------|-------------|
-| `autopilot` | Full autonomous workflow — explore, plan, execute, verify |
-| `ultrawork` | Maximum thoroughness — reads more files, checks more cases |
-| `eco` | Quick and efficient — minimal exploration, essential checks only |
-| `plan` | Creates a plan and waits for your approval before coding |
-| `debug` | Structured debugging — reproduce, hypothesize, fix |
-| `tdd` | Test-Driven Development — write test first, then code |
-| `fix build` | Fix build/compile errors with minimal changes |
-| `review` | Review recent code changes for quality |
-| `security review` | OWASP-based security vulnerability check |
-| `deepinit` | Generate AGENTS.md files for codebase documentation |
-| `research` | Look up documentation and APIs |
+| Skill | Best for |
+|------|----------|
+| `/local-workflow` | Structured local coding tasks |
+| `/research-local` | Documentation and API research |
+| `/debug-local` | Reproducing and fixing bugs |
+| `/tdd-local` | Test-first implementation |
+| `/build-fix-local` | Build, lint, or typecheck failures |
+| `/code-review-local` | Reviewing local diffs |
 
-### Example Conversations
+### Use built-in Oz features alongside the skills
 
-**Building a feature:**
-```
-autopilot: Add user authentication with JWT tokens to the Express API
-```
+The biggest gains come from combining the skill pack with Warp's built-in local features:
 
-**Debugging:**
-```
-debug: Users are getting 500 errors on the /api/profile endpoint
-```
+- `/plan` for multi-step work
+- automatic **Task Lists**
+- **Full Terminal Use** for dev servers, REPLs, and interactive tools
+- **Interactive Code Review** for Git-indexed diffs
+- **Codebase Context** for local code indexing
 
-**Test-driven development:**
-```
-tdd: Add email validation to the signup form
+## Example Prompts
+
+**Plan a refactor**
+
+```text
+/plan Refactor the local install flow to use official skill discovery directories.
 ```
 
-**Quick fix:**
-```
-eco: Fix the typo in the README header
-```
+**Run a structured implementation**
 
-**Planning only:**
-```
-plan: Refactor the database layer to use connection pooling
+```text
+/local-workflow Update the README and setup scripts to use only documented local Oz features.
 ```
 
-## Understanding Agent Modes
+**Debug a local issue**
 
-oh-my-warp has 8 agent modes. The agent switches between them based on the task:
+```text
+/debug-local The dev server crashes when I open the settings page. Reproduce it and find the root cause.
+```
 
-| Mode | When it's used | What it does |
-|------|---------------|-------------|
-| **Explorer** | Understanding code | Searches files, finds patterns |
-| **Architect** | Designing solutions | Analyzes code, creates plans |
-| **Executor** | Writing code | Makes minimal, targeted changes |
-| **Critic** | Checking work | Runs build/test/lint verification |
-| **Researcher** | Looking up docs | Fetches documentation via MCP |
-| **Debugger** | Fixing bugs | Root-cause analysis with evidence |
-| **Security Reviewer** | Security audits | OWASP checks, secrets scanning |
-| **Test Engineer** | Writing tests | TDD, coverage analysis, flaky fix |
+**Do test-first work**
+
+```text
+/tdd-local Add validation for empty email input.
+```
+
+**Review your current diff**
+
+```text
+/code-review-local Review the current diff for clarity, risk, and missing verification.
+```
 
 ## What's in the Box
 
 | Component | What it is |
 |-----------|-----------|
-| `skills/oz-supercharged/` | The main agent skill (5 files) |
+| `.agents/skills/` | Native-only local Oz skills |
 | `templates/WARP.md` | Project rules template |
 | `workflows/` | Git, Docker, and project setup shortcuts |
-| `themes/oz-dark.yaml` | Dark theme with teal accents |
+| `themes/oz-dark.yaml` | Theme |
 | `launch-configs/` | Multi-tab workspace layout |
-| `rules/global-rules.md` | 9 rules for Warp Drive |
-| `mcp/recommended.json` | 7 MCP server configurations |
-| `docs/tips.md` | Advanced tips and techniques |
+| `rules/global-rules.md` | Rules for Warp Drive |
+| `mcp/recommended.json` | Valid MCP server configurations |
+| `docs/tips.md` | Local power-user guide |
 
 ## Troubleshooting
 
-### Skill not activating?
-- Verify files exist in `C:\Program Files\Warp\resources\skills\oz-supercharged\` (Windows) or the equivalent path for your OS
-- Try restarting Warp after installation
+### Skill not showing up?
 
-### Agent ignoring rules?
-- Make sure you added global rules via `/add-rule`
-- Check that WARP.md is in your project root (not a subdirectory)
+- Verify the skill exists in `~/.agents/skills/` or a repository `.agents/skills/` directory
+- Restart Warp if you just installed the files
 
-### Agent reading too many files?
-- Add a Context Budget section to your WARP.md (see `docs/tips.md`)
+### Rules not taking effect?
+
+- Re-add them with `/add-rule`
+- Make sure your project also has a concrete `WARP.md`
+
+### Oz seems blind to the codebase?
+
+- Check that Codebase Context is enabled
+- Wait for indexing to finish for large repositories
+- Add ignore files if indexing is noisy or too large
 
 ## Next Steps
 
-- Read [tips.md](tips.md) for advanced techniques (Agent Profiles, CLI automation, parallel agents)
-- Read [customization.md](customization.md) to create your own skills and workflows
-- Star the [original projects](https://github.com/Yeachan-Heo/oh-my-claudecode) that inspired this toolkit
+- Read [tips.md](tips.md) for advanced local workflows
+- Read [customization.md](customization.md) to build your own skills and workflows
+- Adapt the template and skill pack to your own repositories

@@ -2,45 +2,64 @@
 
 **English** | [한국어](customization-ko.md)
 
-## Adding Your Own Skills
+## Add Your Own Skills
 
-Skills are `SKILL.md` files that Warp loads to give the agent specialized capabilities.
+Skills are reusable `SKILL.md` files that Oz discovers automatically.
+
+### Recommended locations
+
+Use the official skill discovery directories:
+
+- **Project-scoped**: `.agents/skills/`
+- **Global**: `~/.agents/skills/`
+
+Warp also recognizes compatible directories such as `.warp/skills/`, `.claude/skills/`, `.codex/skills/`, and similar tool-specific paths, but `.agents/skills/` is the clearest default.
 
 ### Structure
 
-```
-skills/
-└── my-skill/
-    ├── SKILL.md
-    └── references/
-        └── extra-context.md
+```text
+.agents/
+└── skills/
+    └── my-skill/
+        ├── SKILL.md
+        └── references/
+            └── extra-context.md
 ```
 
-### SKILL.md Format
+### SKILL.md format
 
 ```markdown
 ---
 name: my-skill
-description: >
-  What the skill does and when to use it.
-  Include trigger keywords that activate this skill.
+description: Brief description of what this skill does and when to use it
 ---
 
 # My Skill
 
-Instructions for the agent when this skill is activated.
+## When to use
+Explain the situations where the skill helps.
+
+## Instructions
+Provide clear steps for the agent to follow.
 ```
 
-### Installation
+### Install options
 
-Copy the skill folder to Warp's skills directory:
+- **Global install**: copy the skill folder into `~/.agents/skills/`
+- **Project install**: copy the skill folder into `.agents/skills/` inside a repository
 
-- **Windows**: `C:\Program Files\Warp\resources\skills\` (requires Admin)
-- **macOS/Linux**: Check Warp docs for the current path
+Project-scoped skills are great for team conventions. Global skills are useful for personal workflows you want across projects.
 
-## Creating Custom Workflows
+## Create Custom Workflows
 
-Workflows are YAML files that define reusable commands.
+Workflows are YAML files for repeatable commands.
+
+### Locations
+
+- **Windows**: `%APPDATA%\\warp\\Warp\\data\\workflows\\`
+- **macOS**: `~/.warp/workflows/`
+- **Linux**: `~/.local/share/warp-terminal/workflows/`
+- **Repository scoped**: `.warp/workflows/`
 
 ### Format
 
@@ -55,30 +74,25 @@ arguments:
     default_value: "World"
 ```
 
-### Installation
+Use repository workflows when the command belongs to a codebase. Use local workflows for personal automation.
 
-Place `.yaml` files in:
+## Modify the WARP.md Template
 
-- **Windows**: `%APPDATA%\warp\Warp\data\workflows\`
-- **macOS**: `~/.warp/workflows/`
-- **Linux**: `~/.local/share/warp-terminal/workflows/`
+Edit `templates/WARP.md` to add your defaults:
 
-Or in your repo: `.warp/workflows/` (loaded when repo is active).
+1. Fill in the `[CUSTOMIZE]` sections
+2. Add project commands and conventions
+3. Re-run `setup.ps1` or `setup.sh` if you want to refresh the globally installed template
 
-## Modifying the WARP.md Template
+## Build Custom Themes
 
-Edit `templates/WARP.md` to add your organization's standards:
+Themes are YAML files placed in Warp's theme directories:
 
-1. Fill in the `[CUSTOMIZE]` sections with your defaults
-2. Add any language-specific conventions
-3. Add your standard dev commands
-4. Re-run `setup.ps1` or `setup.sh` to update the installed template
+- **Windows**: `%APPDATA%\\warp\\Warp\\data\\themes\\`
+- **macOS**: `~/.warp/themes/`
+- **Linux**: `~/.local/share/warp-terminal/themes/`
 
-## Building Custom Themes
-
-Themes are YAML files with color definitions.
-
-### Format
+Example:
 
 ```yaml
 name: My Theme
@@ -86,7 +100,7 @@ accent: '#hex'
 cursor: '#hex'
 background: '#hex'
 foreground: '#hex'
-details: darker  # or 'lighter'
+details: darker
 terminal_colors:
   bright:
     black: '#hex'
@@ -108,29 +122,15 @@ terminal_colors:
     white: '#hex'
 ```
 
-### Background Images
+## Create Launch Configurations
 
-Add a background image (JPG only):
+Launch configurations define multi-tab or multi-pane local workspaces.
 
-```yaml
-background_image:
-  path: my-image.jpg  # relative to themes directory
-  opacity: 60         # 0-100
-```
+### Locations
 
-### Installation
-
-Place `.yaml` files in:
-
-- **Windows**: `%APPDATA%\warp\Warp\data\themes\`
-- **macOS**: `~/.warp/themes/`
-- **Linux**: `~/.local/share/warp-terminal/themes/`
-
-Then select in Settings > Appearance > Themes.
-
-## Creating Launch Configurations
-
-Launch configs define multi-window/tab layouts.
+- **Windows**: `%APPDATA%\\warp\\Warp\\data\\launch_configurations\\`
+- **macOS**: `~/.warp/launch_configurations/`
+- **Linux**: `~/.local/share/warp-terminal/launch_configurations/`
 
 ### Format
 
@@ -147,19 +147,20 @@ windows:
         color: blue
 ```
 
-### Installation
+## Rules and MCP Servers
 
-Place `.yaml` files in:
+Rules and MCP servers are part of the local Oz workflow too, but they are typically managed through Warp's UI:
 
-- **Windows**: `%APPDATA%\warp\Warp\data\launch_configurations\`
-- **macOS**: `~/.warp/launch_configurations/`
-- **Linux**: `~/.local/share/warp-terminal/launch_configurations/`
+- **Rules**: add via `/add-rule` or Warp Drive rule management
+- **MCP Servers**: add in Warp's MCP settings, or pass a JSON config to `oz agent run --mcp`
 
-## Contributing Back
+Keep skills focused on behavior, rules focused on constraints, and MCP focused on external tools.
 
-If you create useful skills, workflows, or themes, consider adding them to this repo:
+## Contribute Back
+
+If you create useful skills, workflows, themes, or launch configs:
 
 1. Fork the repository
-2. Add your files to the appropriate directory
-3. Update README.md if adding a new component
-4. Submit a pull request
+2. Add files in the appropriate directory
+3. Update the docs if behavior changes
+4. Open a pull request
